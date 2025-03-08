@@ -1,6 +1,217 @@
-/******* Change Box Model ***************/
+/******* Global Styles ***************/
 *,
 *:before,
 *:after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+#wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/******* Header Styles ***************/
+header#top-header {
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header .siteName a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+#tools a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+/******* Navigation Styles ***************/
+nav {
+  background-color: #444;
+  padding: 10px;
+}
+
+nav ul {
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+nav ul li {
+  margin: 5px 10px;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+/******* Main Content Styles ***************/
+main {
+  flex: 1;
+  padding: 20px;
+}
+
+section {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+article {
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+article h3 {
+  margin-bottom: 10px;
+  font-size: 1.25rem;
+  color: #007BFF;
+}
+
+article p {
+  margin-bottom: 10px;
+}
+
+article ul {
+  list-style-type: disc;
+  margin-left: 20px;
+}
+
+article ul li {
+  margin-bottom: 5px;
+}
+
+button {
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.car-image {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  display: block;
+  margin: 0 auto 15px;
+}
+
+.upgrades-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 0;
+}
+
+.upgrades-list li {
+  text-align: center;
+  margin: 10px;
+}
+
+.upgrades-list img {
+  width: 100px;
+  height: auto;
+}
+
+/******* Footer Styles ***************/
+footer {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  margin-top: auto;
+}
+
+footer .copyright {
+  font-size: 0.875rem;
+}
+
+/******* Responsive Styles (Media Queries) ***************/
+@media (min-width: 768px) {
+  /* Header */
+  header#top-header {
+    padding: 15px 30px;
+  }
+
+  header .siteName a {
+    font-size: 2rem;
+  }
+
+  #tools a {
+    font-size: 1.1rem;
+  }
+
+  /* Navigation */
+  nav ul li {
+    margin: 0 15px;
+  }
+
+  nav ul li a {
+    font-size: 1.1rem;
+  }
+
+  /* Main Content */
+  main {
+    padding: 30px;
+  }
+
+  section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  article {
+    flex: 1 1 calc(50% - 20px);
+    margin: 10px;
+  }
+
+  article h3 {
+    font-size: 1.5rem;
+  }
+
+  button {
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* Main Content */
+  article {
+    flex: 1 1 calc(33.333% - 20px);
+  }
 }
