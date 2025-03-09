@@ -122,12 +122,45 @@ button:hover {
   background-color: #0056b3;
 }
 
+.delorean-feature {
+  display: flex;
+  align-items: center;
+  background-image: url('/images/vehicles/delorean.jpg');
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.delorean-content {
+  background-color: rgba(184, 181, 181, 0.7);
+  padding: 20px;
+  border-radius: 5px;
+  width: 50%;
+}
+
+.delorean-text {
+  text-align: left;
+}
+
 .car-image {
-  width: 100%;
-  max-width: 400px;
-  height: auto;
-  display: block;
-  margin: 0 auto 15px;
+  display: none; /* Ocultamos la imagen ya que usamos la de fondo */
+}
+
+.upgrades-reviews {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.upgrades {
+  flex: 1;
+}
+
+.reviews {
+  flex: 1;
 }
 
 .upgrades-list {
