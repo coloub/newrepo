@@ -1,4 +1,4 @@
-/******* Global Styles ***************/
+/* Global Styles*/
 *,
 *:before,
 *:after {
@@ -20,7 +20,7 @@ body {
   min-height: 100vh;
 }
 
-/******* Header Styles ***************/
+/* Header Styles */
 header#top-header {
   background-color: #333;
   color: #fff;
@@ -43,7 +43,7 @@ header .siteName a {
   font-size: 1rem;
 }
 
-/******* Navigation Styles ***************/
+/*Navigation Styles*/
 nav {
   background-color: #444;
   padding: 10px;
@@ -70,7 +70,7 @@ nav ul li a:hover {
   text-decoration: underline;
 }
 
-/******* Main Content Styles ***************/
+/*Main Content Styles*/
 main {
   flex: 1;
   padding: 20px;
@@ -146,7 +146,7 @@ button:hover {
 }
 
 .car-image {
-  display: none; /* Ocultamos la imagen ya que usamos la de fondo */
+  display: none; /* Oculta la imagen de fondo */
 }
 
 .upgrades-reviews {
@@ -180,7 +180,7 @@ button:hover {
   height: auto;
 }
 
-/******* Footer Styles ***************/
+/*Footer Styles*/
 footer {
   background-color: #333;
   color: #fff;
@@ -193,7 +193,7 @@ footer .copyright {
   font-size: 0.875rem;
 }
 
-/******* Responsive Styles (Media Queries) ***************/
+/*Responsive Styles (Media Queries)*/
 @media (max-width: 767px) {
   .upgrades-reviews {
     flex-direction: column;
