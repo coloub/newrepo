@@ -135,7 +135,7 @@ button:hover {
 }
 
 .delorean-content {
-  background-color: rgba(184, 181, 181, 0.7);
+  background-color: rgba(70, 68, 68, 0.7);
   padding: 20px;
   border-radius: 5px;
   width: 50%;
@@ -194,6 +194,43 @@ footer .copyright {
 }
 
 /******* Responsive Styles (Media Queries) ***************/
+@media (max-width: 767px) {
+  .upgrades-reviews {
+    flex-direction: column;
+  }
+
+  .reviews {
+    order: -1; /* Mueve la sección de reviews arriba */
+    margin-bottom: 20px;
+  }
+
+  .upgrades {
+    order: 1; /* Mueve la sección de upgrades abajo */
+  }
+
+  .upgrades-list {
+    justify-content: center;
+  }
+
+  .upgrades-list li {
+    flex: 1 1 45%; /* Ajusta el tamaño de los elementos para que quepan dos por fila */
+    margin: 10px;
+  }
+
+  .delorean-content {
+    width: 100%; /* Ajusta el ancho del contenido para móviles */
+  }
+
+  .delorean-feature {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .delorean-text {
+    text-align: center;
+  }
+}
+
 @media (min-width: 768px) {
   /* Header */
   header#top-header {
