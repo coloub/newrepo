@@ -4,13 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
+    <link rel="stylesheet" href="/css/vehicle-detail-styles.css">
 </head>
 <body>
     <header>
-        <%= nav %>
+        <h1><%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
     </header>
-    <main>
-        <%= wrapVehicleDetailsInHTML(vehicle) %>
-    </main>
+    <div class="vehicle-detail">
+        <img src="<%= vehicle.inv_image %>" alt="Image of <%= vehicle.inv_make %> <%= vehicle.inv_model %>" />
+        <p>Year: <%= vehicle.inv_year %></p>
+        <p>Price: $<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %></p>
+        <p>Mileage: <%= new Intl.NumberFormat('en-US').format(vehicle.inv_mileage) %> miles</p>
+        <p>Description: <%= vehicle.inv_description %></p>
+    </div>
+    <footer>
+        <a href="/">Back to Inventory</a>
+    </footer>
 </body>
 </html>

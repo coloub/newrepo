@@ -1,6 +1,23 @@
 const invModel = require("../models/inventory-model")
 const Util = {}
 
+/* **************************************
+ * Wrap vehicle details in HTML
+ ************************************** */
+Util.wrapVehicleDetailsInHTML = function(vehicle) {
+  return `
+    <div class="vehicle-detail">
+      <h1>${vehicle.inv_make} ${vehicle.inv_model}</h1>
+      <img src="${vehicle.inv_image}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}" />
+      <p>Year: ${vehicle.inv_year}</p>
+      <p>Price: $${new Intl.NumberFormat('en-US').format(vehicle.inv_price)}</p>
+      <p>Mileage: ${new Intl.NumberFormat('en-US').format(vehicle.inv_mileage)} miles</p>
+      <p>Description: ${vehicle.inv_description}</p>
+    </div>
+  `;
+}
+
+
 /* ************************
  * Constructs the nav HTML unordered list
  ************************** */
