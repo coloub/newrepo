@@ -12,7 +12,7 @@ const app = express()
 const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
-const utilities = require("./utilities/index") // Ajusta la ruta según donde esté ubicado el archivo
+const utilities = require("./utilities/index") // Importante utilities
 ;
 
 
