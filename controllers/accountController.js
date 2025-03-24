@@ -16,7 +16,20 @@ accountController.buildLogin = async (req, res, next) => {
     });
 };
 
+/* ****************************************
+*  Deliver registration view
+* *************************************** */
+accountController.buildRegister = async (req, res, next) => {
+    let nav = await utilities.getNav();
+    res.render("account/register", {
+        title: "Register",
+        nav,
+        errors: null
+    });
+};
+
 accountController.getAccountView = (req, res) => {
+
     res.render('account/index', { title: 'My Account' }); // Adjust the view path as necessary
 };
 

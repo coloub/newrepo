@@ -12,5 +12,8 @@ router.use((err, req, res, next) => {
     res.status(500).send('Something went wrong!');
 });
 
+router.get('/register', accountController.buildRegister); // Add registration route
+
 // Export the router
+
 module.exports = router;
