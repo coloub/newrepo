@@ -8,14 +8,13 @@ router.get('/', accountController.buildLogin);
 
 // Error handler middleware
 router.use((err, req, res, next) => {
-    console.error(err);
-    res.status(500).send('Something went wrong!');
+    console.error(err); // Log the error
+    req.flash("notice", "An error occurred during registration. Please try again."); // Flash message for the user
+    res.status(500).send('Something went wrong!'); // Send a generic error response
 });
 
 router.get('/register', accountController.buildRegister); // Add registration route
 router.post('/register', utilities.handleErrors(accountController.registerAccount));
 
-
 // Export the router
-
 module.exports = router;

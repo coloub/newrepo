@@ -31,30 +31,31 @@ accountController.buildRegister = async (req, res, next) => {
 *  Process Registration
 * *************************************** */
 async function registerAccount(req, res) {
-  let nav = await utilities.getNav();
-  const { account_firstname, account_lastname, account_email, account_password } = req.body;
+    let nav = await utilities.getNav();
+    const { account_firstname, account_lastname, account_email, account_password } = req.body;
 
-  const regResult = await accountModel.registerAccount(
-    account_firstname,
-    account_lastname,
-    account_email,
-    account_password
-  );
+    const regResult = await accountModel.registerAccount(
+        account_firstname,
+        account_lastname,
+        account_email,
+        account_password
+    );
 
-  if (regResult) {
+    if (typeof regResult === 'string') {
+        req.flash("notice", regResult); // Use the error message from the model
+        res.status(501).render("account/register", {
+            title: "Registration",
+            nav,
+            errors: regResult // Pass the error message to the view
+        });
+        return; // Exit the function early if there's an error
+    }
+
     req.flash("success", `Congratulations, you\'re registered ${account_firstname}. Please log in.`);
-
     res.status(201).render("account/login", {
-      title: "Login",
-      nav,
+        title: "Login",
+        nav,
     });
-  } else {
-    req.flash("notice", "Sorry, the registration failed.");
-    res.status(501).render("account/register", {
-      title: "Registration",
-      nav,
-    });
-  }
 }
 
 accountController.registerAccount = registerAccount; // Add the new function to the controller
