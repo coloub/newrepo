@@ -13,6 +13,8 @@ router.use((err, req, res, next) => {
 });
 
 router.get('/register', accountController.buildRegister); // Add registration route
+router.post('/register', utilities.handleErrors(accountController.registerAccount));
+
 
 // Export the router
 
