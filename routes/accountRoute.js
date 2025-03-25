@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const utilities = require('../utilities/index');
 const accountController = require('../controllers/accountController');
+const regValidate = require('../utilities/account-validation');
 
 // Define the GET route for the account view
 router.get('/', accountController.buildLogin);
@@ -14,7 +15,7 @@ router.use((err, req, res, next) => {
 });
 
 router.get('/register', accountController.buildRegister); // Add registration route
-router.post('/register', utilities.handleErrors(accountController.registerAccount));
+router.post('/register', regValidate.registrationRules(), regValidate.checkRegData, utilities.handleErrors(accountController.registerAccount));
 
 // Export the router
 module.exports = router;

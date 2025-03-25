@@ -9,9 +9,15 @@
 <body>
     <div class="container">
         <h1><%= title %></h1>
+        
         <% if (errors) { %>
-            <div class="alert alert-danger"><%= errors %></div>
-        <% } %>
+            <ul class="notice">
+           <% errors.array().forEach(error => { %>
+             <li><%= error.msg %></li>
+          <%  }) %>
+           </ul>
+          <% } %>
+
         <form action="/account/register" method="POST">
             <div class="form-group">
                 <label for="firstName">First Name:</label>
