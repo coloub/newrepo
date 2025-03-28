@@ -4,6 +4,63 @@ const baseController = require("./baseController");
 
 const invCont = {};
 
+// Function to get classifications
+invCont.getClassifications = baseController.handleErrors(async function (req, res, next) {
+    const classifications = await invModel.getClassifications(); // Fetch classifications from the model
+    res.json(classifications); // Return classifications as JSON
+
+});
+
+// Function to render the management view
+invCont.renderManagementView = baseController.handleErrors(async function (req, res, next) {
+    const flashMessage = req.flash('success'); // Assuming you're using connect-flash
+    const nav = await utilities.getNav();
+    res.render("./inventory/management", {
+        title: "Inventory Management",
+        nav,
+        flashMessage: flashMessage.length > 0 ? flashMessage[0] : null,
+    });
+});
+
+// Function to render the add classification view
+invCont.renderAddClassificationView = baseController.handleErrors(async function (req, res, next) {
+    const flashMessage = req.flash('error');
+    const nav = await utilities.getNav();
+    res.render("./inventory/add-classification", {
+        title: "Add Classification",
+        nav,
+        flashMessage: flashMessage.length > 0 ? flashMessage[0] : null,
+    });
+});
+
+// Function to handle adding a classification
+invCont.addClassification = baseController.handleErrors(async function (req, res, next) {
+    const { classificationName } = req.body;
+    await invModel.addClassification(classificationName); // Assuming this function exists in the model
+    req.flash('success', 'Classification added successfully!');
+    res.redirect('/inv/');
+});
+
+// Function to render the add inventory view
+invCont.renderAddInventoryView = baseController.handleErrors(async function (req, res, next) {
+    const flashMessage = req.flash('error');
+    const nav = await utilities.getNav();
+    res.render("./inventory/add-inventory", {
+        title: "Add Inventory",
+        nav,
+        flashMessage: flashMessage.length > 0 ? flashMessage[0] : null,
+    });
+});
+
+// Function to handle adding a vehicle
+invCont.addInventory = baseController.handleErrors(async function (req, res, next) {
+    const { vehicleMake, vehicleModel, classification_id, imagePath } = req.body;
+    await invModel.addInventory(vehicleMake, vehicleModel, classification_id, imagePath); // Assuming this function exists in the model
+    req.flash('success', 'Vehicle added successfully!');
+    res.redirect('/inv/');
+});
+
+
 // Function to handle POST request for adding a new classification
 invCont.addClassification = baseController.handleErrors(async function (req, res, next) {
     const { classification_name } = req.body;

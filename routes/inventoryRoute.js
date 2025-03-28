@@ -13,7 +13,14 @@ router.post("/add-inventory", invController.addInventory); // Route to handle ad
 router.get("/add-inventory", invController.showAddInventoryView); // Route to show add inventory view
 
 // Route to get inventory by classification
+router.get("/", invController.renderManagementView);
+router.get("/add-classification", invController.renderAddClassificationView);
+router.get("/add-inventory", invController.renderAddInventoryView);
+router.post("/add-classification", invController.addClassification);
+router.post("/add-inventory", invController.addInventory);
+router.get("/api/classifications", invController.getClassifications);
 router.get("/type/:classificationId", invController.buildByClassificationId);
+
 
 // Route to get vehicle detail view
 router.get("/detail/:id", invController.getVehicleDetail);

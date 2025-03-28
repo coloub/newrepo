@@ -1,51 +1,46 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Vehículo</title>
-    <script>
-        // Validación en el lado del cliente
-        function validateForm() {
-            const make = document.getElementById("inv_make").value;
-            const model = document.getElementById("inv_model").value;
-            if (make === "" || model === "") {
-                alert("Por favor, complete todos los campos.");
-                return false;
-            }
-            return true;
-        }
-    </script>
+    <title>Add Inventory</title>
 </head>
 <body>
-    <h1>Agregar Vehículo</h1>
-
+    <h1>Add New Vehicle to Inventory</h1>
     <% if (flashMessage) { %>
-        <p style="color: red;"><%= flashMessage %></p>
+        <div class="flash-message"><%= flashMessage %></div>
     <% } %>
-
-    <form action="/inv/add-inventory" method="POST" onsubmit="return validateForm()">
-        <label for="inv_make">Marca:</label>
-        <input type="text" id="inv_make" name="inv_make" value="" required>
-
-        <br><br>
+    <form action="/inv/add-inventory" method="POST" id="inventoryForm">
+        <label for="vehicleMake">Make:</label>
+        <input type="text" name="vehicleMake" id="vehicleMake" required>
         
-        <label for="inv_model">Modelo:</label>
-        <input type="text" id="inv_model" name="inv_model" value="<%= vehicleData.inv_model || '' %>" required>
-        <br><br>
+        <label for="vehicleModel">Model:</label>
+        <input type="text" name="vehicleModel" id="vehicleModel" required>
         
-        <label for="classification_id">Clasificación:</label>
-        <%= classificationSelect %>
-        <br><br>
-
-        <label for="inv_image">Imagen (opcional):</label>
-        <input type="file" id="inv_image" name="inv_image">
-        <br><br>
-
-        <input type="submit" value="Agregar Vehículo">
+        <label for="classification_id">Classification:</label>
+        <div id="classificationListContainer">
+            <!-- Classification list will be dynamically populated here -->
+        </div>
+        
+        <label for="imagePath">Image Path:</label>
+        <input type="text" name="imagePath" id="imagePath" required>
+        
+        <button type="submit">Add Vehicle</button>
     </form>
-
-    <br>
-    <a href="/inv/">Volver a la gestión de inventario</a>
+    <script>
+        // JavaScript to dynamically populate the classification list
+        document.addEventListener('DOMContentLoaded', async () => {
+            const response = await fetch('/api/classifications'); // Assuming an API endpoint exists
+            const classifications = await response.json();
+            const classificationListContainer = document.getElementById('classificationListContainer');
+            let classificationList = '<select name="classification_id" required>';
+            classificationList += '<option value="">Choose a Classification</option>';
+            classifications.forEach(classification => {
+                classificationList += `<option value="${classification.classification_id}">${classification.classification_name}</option>`;
+            });
+            classificationList += '</select>';
+            classificationListContainer.innerHTML = classificationList;
+        });
+    </script>
 </body>
 </html>

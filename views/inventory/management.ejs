@@ -1,20 +1,18 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Inventario</title>
+    <title>Inventory Management</title>
 </head>
 <body>
-    <h1>Gestión de Inventario</h1>
-
+    <h1>Manage Your Inventory</h1>
     <% if (flashMessage) { %>
-        <p style="color: red;"><%= flashMessage %></p>
+        <div class="flash-message"><%= flashMessage %></div>
     <% } %>
-
-    <ul>
-        <li><a href="/inv/add-classification">Agregar Clasificación</a></li>
-        <li><a href="/inv/add-inventory">Agregar Vehículo</a></li>
-    </ul>
+    <nav>
+        <a href="/inv/add-classification">Add New Classification</a>
+        <a href="/inv/add-inventory">Add New Inventory</a>
+    </nav>
 </body>
 </html>
