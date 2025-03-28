@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Vehículo</title>
+    <script>
+        // Validación en el lado del cliente
+        function validateForm() {
+            const make = document.getElementById("inv_make").value;
+            const model = document.getElementById("inv_model").value;
+            if (make === "" || model === "") {
+                alert("Por favor, complete todos los campos.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <h1>Agregar Vehículo</h1>
+
+    <% if (flashMessage) { %>
+        <p style="color: red;"><%= flashMessage %></p>
+    <% } %>
+
+    <form action="/inv/add-inventory" method="POST" onsubmit="return validateForm()">
+        <label for="inv_make">Marca:</label>
+        <input type="text" id="inv_make" name="inv_make" value="<%= vehicleData.inv_make || '' %>" required>
+        <br><br>
+        
+        <label for="inv_model">Modelo:</label>
+        <input type="text" id="inv_model" name="inv_model" value="<%= vehicleData.inv_model || '' %>" required>
+        <br><br>
+        
+        <label for="classification_id">Clasificación:</label>
+        <%= classificationSelect %>
+        <br><br>
+
+        <label for="inv_image">Imagen (opcional):</label>
+        <input type="file" id="inv_image" name="inv_image">
+        <br><br>
+
+        <input type="submit" value="Agregar Vehículo">
+    </form>
+
+    <br>
+    <a href="/inv/">Volver a la gestión de inventario</a>
+</body>
+</html>

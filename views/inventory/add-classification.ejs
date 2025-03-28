@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Clasificación</title>
+    <script>
+        // Validación en el lado del cliente para el nombre de la clasificación
+        function validateForm() {
+            const classificationName = document.getElementById("classification_name").value;
+            const regex = /^[a-zA-Z0-9]+$/; // Asegura que solo contenga letras y números
+            if (!classificationName.match(regex)) {
+                alert("El nombre de la clasificación solo puede contener letras y números.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <h1>Agregar Clasificación</h1>
+
+    <% if (flashMessage) { %>
+        <p style="color: red;"><%= flashMessage %></p>
+    <% } %>
+
+    <form action="/inv/add-classification" method="POST" onsubmit="return validateForm()">
+        <label for="classification_name">Nombre de la Clasificación:</label>
+        <input type="text" id="classification_name" name="classification_name" required>
+        <br><br>
+        <input type="submit" value="Agregar Clasificación">
+    </form>
+
+    <br>
+    <a href="/inv/">Volver a la gestión de inventario</a>
+</body>
+</html>

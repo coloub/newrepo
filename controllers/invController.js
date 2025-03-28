@@ -38,4 +38,48 @@ invCont.buildByClassificationId = baseController.handleErrors(async function (re
   });
 });
 
+/* ***************************
+ *  Show inventory management view
+ * ************************** */
+invCont.showManagementView = baseController.handleErrors(async function (req, res, next) {
+  const nav = await utilities.getNav();
+  res.render("./inventory/management", {
+    title: "Gestión de Inventario",
+    nav,
+  });
+});
+
+/* ***************************
+ *  Show add classification view
+ * ************************** */
+invCont.showAddClassificationView = baseController.handleErrors(async function (req, res, next) {
+  const nav = await utilities.getNav();
+  res.render("./inventory/add-classification", {
+    title: "Agregar Clasificación",
+    nav,
+  });
+});
+
+/* ***************************
+ *  Show add inventory view
+ * ************************** */
+invCont.showAddInventoryView = baseController.handleErrors(async function (req, res, next) {
+  const nav = await utilities.getNav();
+  // Obtener las clasificaciones para el formulario
+  const classifications = await invModel.getClassifications();
+  let classificationSelect = '<select name="classification_id" required>';
+  classificationSelect += '<option value="">Seleccione una clasificación</option>';
+  classifications.rows.forEach(classification => {
+    classificationSelect += `<option value="${classification.classification_id}">${classification.classification_name}</option>`;
+  });
+  classificationSelect += '</select>';
+
+  res.render("./inventory/add-inventory", {
+    title: "Agregar Vehículo",
+    nav,
+    classificationSelect: classificationSelect,
+  });
+});
+
+
 module.exports = invCont;
