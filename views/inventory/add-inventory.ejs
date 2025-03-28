@@ -26,7 +26,8 @@
 
     <form action="/inv/add-inventory" method="POST" onsubmit="return validateForm()">
         <label for="inv_make">Marca:</label>
-        <input type="text" id="inv_make" name="inv_make" value="<%= vehicleData.inv_make || '' %>" required>
+        <input type="text" id="inv_make" name="inv_make" value="" required>
+
         <br><br>
         
         <label for="inv_model">Modelo:</label>

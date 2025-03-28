@@ -71,10 +71,14 @@ invCont.buildByClassificationId = baseController.handleErrors(async function (re
  * ************************** */
 invCont.showManagementView = baseController.handleErrors(async function (req, res, next) {
     const nav = await utilities.getNav();
-    const flashMessage = req.flash('success') || req.flash('error');
+    const classifications = await invModel.getClassifications(); // Fetch classifications
+    const successMessages = req.flash('success');
+    const errorMessages = req.flash('error');
+    const flashMessage = [...successMessages, ...errorMessages].join(' '); // Concatenate messages
     res.render("./inventory/management", {
         title: "Gestión de Inventario",
         nav,
+        classifications, // Pass classifications to the view
         flashMessage,
     });
 });
@@ -84,7 +88,9 @@ invCont.showManagementView = baseController.handleErrors(async function (req, re
  * ************************** */
 invCont.showAddClassificationView = baseController.handleErrors(async function (req, res, next) {
     const nav = await utilities.getNav();
-    const flashMessage = req.flash('success') || req.flash('error');
+    const successMessages = req.flash('success');
+    const errorMessages = req.flash('error');
+    const flashMessage = [...successMessages, ...errorMessages].join(' '); // Concatenate messages
     res.render("./inventory/add-classification", {
         title: "Agregar Clasificación",
         nav,
@@ -104,7 +110,9 @@ invCont.showAddInventoryView = baseController.handleErrors(async function (req, 
         classificationSelect += `<option value="${classification.classification_id}">${classification.classification_name}</option>`;
     });
     classificationSelect += '</select>';
-    const flashMessage = req.flash('success') || req.flash('error');
+    const successMessages = req.flash('success');
+    const errorMessages = req.flash('error');
+    const flashMessage = [...successMessages, ...errorMessages].join(' '); // Concatenate messages
     res.render("./inventory/add-inventory", {
         title: "Agregar Vehículo",
         nav,
