@@ -4,6 +4,34 @@ const baseController = require("./baseController");
 
 const invCont = {};
 
+// Function to handle POST request for adding a new classification
+invCont.addClassification = baseController.handleErrors(async function (req, res, next) {
+    const { classification_name } = req.body;
+    // Validate classification name
+    if (!classification_name || !/^[a-zA-Z0-9]+$/.test(classification_name)) {
+        req.flash('error', 'El nombre de la clasificación solo puede contener letras y números.');
+        return res.redirect('/inv/add-classification');
+    }
+    // Insert classification into the database
+    await invModel.addClassification(classification_name);
+    req.flash('success', 'Clasificación agregada exitosamente.');
+    res.redirect('/inv');
+});
+
+// Function to handle POST request for adding a new inventory item
+invCont.addInventory = baseController.handleErrors(async function (req, res, next) {
+    const { inv_make, inv_model, classification_id } = req.body;
+    // Validate inputs
+    if (!inv_make || !inv_model || !classification_id) {
+        req.flash('error', 'Por favor, complete todos los campos.');
+        return res.redirect('/inv/add-inventory');
+    }
+    // Insert inventory item into the database
+    await invModel.addInventory(inv_make, inv_model, classification_id);
+    req.flash('success', 'Vehículo agregado exitosamente.');
+    res.redirect('/inv');
+});
+
 /* ***************************
  *  Get vehicle detail view
  * ************************** */
@@ -42,44 +70,47 @@ invCont.buildByClassificationId = baseController.handleErrors(async function (re
  *  Show inventory management view
  * ************************** */
 invCont.showManagementView = baseController.handleErrors(async function (req, res, next) {
-  const nav = await utilities.getNav();
-  res.render("./inventory/management", {
-    title: "Gestión de Inventario",
-    nav,
-  });
+    const nav = await utilities.getNav();
+    const flashMessage = req.flash('success') || req.flash('error');
+    res.render("./inventory/management", {
+        title: "Gestión de Inventario",
+        nav,
+        flashMessage,
+    });
 });
 
 /* ***************************
  *  Show add classification view
  * ************************** */
 invCont.showAddClassificationView = baseController.handleErrors(async function (req, res, next) {
-  const nav = await utilities.getNav();
-  res.render("./inventory/add-classification", {
-    title: "Agregar Clasificación",
-    nav,
-  });
+    const nav = await utilities.getNav();
+    const flashMessage = req.flash('success') || req.flash('error');
+    res.render("./inventory/add-classification", {
+        title: "Agregar Clasificación",
+        nav,
+        flashMessage,
+    });
 });
 
 /* ***************************
  *  Show add inventory view
  * ************************** */
 invCont.showAddInventoryView = baseController.handleErrors(async function (req, res, next) {
-  const nav = await utilities.getNav();
-  // Obtener las clasificaciones para el formulario
-  const classifications = await invModel.getClassifications();
-  let classificationSelect = '<select name="classification_id" required>';
-  classificationSelect += '<option value="">Seleccione una clasificación</option>';
-  classifications.rows.forEach(classification => {
-    classificationSelect += `<option value="${classification.classification_id}">${classification.classification_name}</option>`;
-  });
-  classificationSelect += '</select>';
-
-  res.render("./inventory/add-inventory", {
-    title: "Agregar Vehículo",
-    nav,
-    classificationSelect: classificationSelect,
-  });
+    const nav = await utilities.getNav();
+    const classifications = await invModel.getClassifications();
+    let classificationSelect = '<select name="classification_id" required>';
+    classificationSelect += '<option value="">Seleccione una clasificación</option>';
+    classifications.rows.forEach(classification => {
+        classificationSelect += `<option value="${classification.classification_id}">${classification.classification_name}</option>`;
+    });
+    classificationSelect += '</select>';
+    const flashMessage = req.flash('success') || req.flash('error');
+    res.render("./inventory/add-inventory", {
+        title: "Agregar Vehículo",
+        nav,
+        classificationSelect: classificationSelect,
+        flashMessage,
+    });
 });
-
 
 module.exports = invCont;

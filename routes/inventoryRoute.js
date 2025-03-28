@@ -6,11 +6,11 @@ const invController = require("../controllers/invController")
 // Ruta para la vista de gestión de inventario
 router.get("/inv", invController.showManagementView);
 
-// Ruta para la vista de agregar clasificación
-router.get("/add-classification", invController.showAddClassificationView);
+router.post("/add-classification", invController.addClassification); // Route to handle adding a new classification
+router.get("/add-classification", invController.showAddClassificationView); // Route to show add classification view
 
-// Ruta para la vista de agregar inventario
-router.get("/add-inventory", invController.showAddInventoryView);
+router.post("/add-inventory", invController.addInventory); // Route to handle adding a new inventory item
+router.get("/add-inventory", invController.showAddInventoryView); // Route to show add inventory view
 
 // Route to get inventory by classification
 router.get("/type/:classificationId", invController.buildByClassificationId);
