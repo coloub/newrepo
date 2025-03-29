@@ -9,7 +9,7 @@ router.use("/js", express.static(__dirname + "/public/js"));
 router.use("/images", express.static(__dirname + "/public/images"));
 
 router.get('/error', (req, res) => {
-    res.status(505).send('HTTP Version Not Supported');
+    res.status(505).send('HTTP Version Not Supported Error 505');
 });
 
 module.exports = router;

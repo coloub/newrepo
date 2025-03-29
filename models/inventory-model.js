@@ -9,6 +9,17 @@ async function getClassifications() {
 }
 
 /* ***************************
+ *  Add a new classification
+ * ************************** */
+async function addClassification(classificationName) {
+  const result = await pool.query(
+    'INSERT INTO public.classification (classification_name) VALUES ($1) RETURNING *',
+    [classificationName]
+  );
+  return result.rows[0]; // Return the newly created classification
+}
+
+/* ***************************
  *  Get all inventory items and classification_name by classification_id
  * ************************** */
 async function getInventoryByClassificationId(classification_id) {
@@ -41,4 +52,4 @@ async function getVehicleById(vehicleId) {
   }
 }
 
-module.exports = { getClassifications, getInventoryByClassificationId, getVehicleById };
+module.exports = { getClassifications, addClassification, getInventoryByClassificationId, getVehicleById };
