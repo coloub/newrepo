@@ -8,4 +8,8 @@ router.use("/css", express.static(__dirname + "/public/css"));
 router.use("/js", express.static(__dirname + "/public/js"));
 router.use("/images", express.static(__dirname + "/public/images"));
 
+router.get('/error', (req, res) => {
+    res.status(505).send('HTTP Version Not Supported');
+});
+
 module.exports = router;
