@@ -156,26 +156,83 @@ invCont.showAddClassificationView = baseController.handleErrors(async function (
 });
 
 /* ***************************
- *  Show add inventory view
+ *  Show add inventory view with classification list
  * ************************** */
 invCont.showAddInventoryView = baseController.handleErrors(async function (req, res, next) {
     const nav = await utilities.getNav();
-    const classifications = await invModel.getClassifications();
-    let classificationSelect = '<select name="classification_id" required>';
-    classificationSelect += '<option value="">Seleccione una clasificación</option>';
-    classifications.rows.forEach(classification => {
-        classificationSelect += `<option value="${classification.classification_id}">${classification.classification_name}</option>`;
-    });
-    classificationSelect += '</select>';
+    const classificationSelect = await utilities.buildClassificationList();
     const successMessages = req.flash('success');
     const errorMessages = req.flash('error');
-    const flashMessage = [...successMessages, ...errorMessages].join(' '); // Concatenate messages
+    const flashMessage = [...successMessages, ...errorMessages].join(' ');
+    
     res.render("./inventory/add-inventory", {
-        title: "Agregar Vehículo",
+        title: "Add Vehicle",
         nav,
-        classificationSelect: classificationSelect,
+        classificationSelect,
         flashMessage,
+        errors: null,
     });
+});
+
+/* ***************************
+ *  Process Add Inventory Form
+ * ************************** */
+invCont.addInventory = baseController.handleErrors(async function (req, res, next) {
+    const {
+        inv_make,
+        inv_model,
+        inv_year,
+        inv_description,
+        inv_image,
+        inv_thumbnail,
+        inv_price,
+        inv_miles,
+        inv_color,
+        classification_id
+    } = req.body;
+
+    // Validate inputs (basic validation)
+    if (!inv_make || !inv_model || !classification_id) {
+        req.flash('error', 'Please complete all required fields');
+        // Send back form with entered values for sticky form
+        res.status(400).render("./inventory/add-inventory", {
+            title: "Add Vehicle",
+            nav: await utilities.getNav(),
+            classificationSelect: await utilities.buildClassificationList(classification_id),
+            flashMessage: 'Please complete all required fields',
+            // Include all form values to make the form sticky
+            inv_make, inv_model, inv_year, inv_description, 
+            inv_image, inv_thumbnail, inv_price, inv_miles, inv_color
+        });
+        return;
+    }
+
+    try {
+        // Add inventory to database
+        await invModel.addInventory(
+            inv_make, inv_model, inv_year, inv_description,
+            inv_image, inv_thumbnail, inv_price, inv_miles,
+            inv_color, classification_id
+        );
+        
+        // Set success message and redirect
+        req.flash('success', `${inv_make} ${inv_model} added to inventory`);
+        res.redirect('/inv');
+    } catch (error) {
+        console.error("Error in addInventory:", error);
+        req.flash('error', 'Sorry, there was an error processing the request');
+        
+        // Return to form with entered values (sticky form)
+        res.status(500).render("./inventory/add-inventory", {
+            title: "Add Vehicle",
+            nav: await utilities.getNav(),
+            classificationSelect: await utilities.buildClassificationList(classification_id),
+            flashMessage: 'An error occurred. Please try again.',
+            // Include all form values to make the form sticky
+            inv_make, inv_model, inv_year, inv_description, 
+            inv_image, inv_thumbnail, inv_price, inv_miles, inv_color
+        });
+    }
 });
 
 module.exports = invCont;

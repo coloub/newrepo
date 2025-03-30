@@ -3,44 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Inventory</title>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <h1>Add New Vehicle to Inventory</h1>
-    <% if (flashMessage) { %>
-        <div class="flash-message"><%= flashMessage %></div>
-    <% } %>
-    <form action="/inv/add-inventory" method="POST" id="inventoryForm">
-        <label for="vehicleMake">Make:</label>
-        <input type="text" name="vehicleMake" id="vehicleMake" required>
-        
-        <label for="vehicleModel">Model:</label>
-        <input type="text" name="vehicleModel" id="vehicleModel" required>
-        
-        <label for="classification_id">Classification:</label>
-        <div id="classificationListContainer">
-            <!-- Classification list will be dynamically populated here -->
-        </div>
-        
-        <label for="imagePath">Image Path:</label>
-        <input type="text" name="imagePath" id="imagePath" required>
-        
-        <button type="submit">Add Vehicle</button>
-    </form>
-    <script>
-        // JavaScript to dynamically populate the classification list
-        document.addEventListener('DOMContentLoaded', async () => {
-            const response = await fetch('/api/classifications'); // Assuming an API endpoint exists
-            const classifications = await response.json();
-            const classificationListContainer = document.getElementById('classificationListContainer');
-            let classificationList = '<select name="classification_id" required>';
-            classificationList += '<option value="">Choose a Classification</option>';
-            classifications.forEach(classification => {
-                classificationList += `<option value="${classification.classification_id}">${classification.classification_name}</option>`;
-            });
-            classificationList += '</select>';
-            classificationListContainer.innerHTML = classificationList;
-        });
-    </script>
+    <main>
+        <h1><%= title %></h1>
+        <% if (flashMessage) { %>
+            <div class="flash-message"><%= flashMessage %></div>
+        <% } %>
+        <form action="/inv/add-inventory" method="POST" id="inventoryForm">
+            <fieldset>
+                <legend>Add New Vehicle</legend>
+                
+                <label for="inv_make">Make:</label>
+                <input type="text" name="inv_make" id="inv_make" required 
+                       value="<%= locals.inv_make || '' %>">
+                
+                <label for="inv_model">Model:</label>
+                <input type="text" name="inv_model" id="inv_model" required 
+                       value="<%= locals.inv_model || '' %>">
+                
+                <label for="inv_year">Year:</label>
+                <input type="text" name="inv_year" id="inv_year" required pattern="[0-9]{4}"
+                       value="<%= locals.inv_year || '' %>">
+                
+                <label for="inv_description">Description:</label>
+                <textarea name="inv_description" id="inv_description" required><%= locals.inv_description || '' %></textarea>
+                
+                <label for="inv_image">Image Path:</label>
+                <input type="text" name="inv_image" id="inv_image" required
+                       value="<%= locals.inv_image || '/images/vehicles/no-image.png' %>">
+                
+                <label for="inv_thumbnail">Thumbnail Path:</label>
+                <input type="text" name="inv_thumbnail" id="inv_thumbnail" required
+                       value="<%= locals.inv_thumbnail || '/images/vehicles/no-image-tn.png' %>">
+                
+                <label for="inv_price">Price:</label>
+                <input type="number" name="inv_price" id="inv_price" required min="0" step="0.01"
+                       value="<%= locals.inv_price || '' %>">
+                
+                <label for="inv_miles">Miles:</label>
+                <input type="number" name="inv_miles" id="inv_miles" required min="0"
+                       value="<%= locals.inv_miles || '' %>">
+                
+                <label for="inv_color">Color:</label>
+                <input type="text" name="inv_color" id="inv_color" required
+                       value="<%= locals.inv_color || '' %>">
+                
+                <label for="classification_id">Classification:</label>
+                <%- classificationSelect %>
+                
+                <button type="submit">Add Vehicle</button>
+            </fieldset>
+        </form>
+    </main>
 </body>
 </html>
