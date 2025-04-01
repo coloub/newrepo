@@ -3,17 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Classification</title>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <h1>Add New Classification</h1>
-    <% if (flashMessage) { %>
-        <div class="flash-message"><%= flashMessage %></div>
-    <% } %>
-    <form action="/inv/add-classification" method="POST" id="classificationForm">
-        <label for="classificationName">Classification Name:</label>
-        <input type="text" name="classificationName" id="classificationName" required pattern="[^\\s!@#$%^&*()_+={}:;\"'<>,.?/]+">
-        <button type="submit">Add Classification</button>
-    </form>
+    <main>
+        <h1><%= title %></h1>
+        <% if (flashMessage) { %>
+            <div class="flash-message"><%= flashMessage %></div>
+        <% } %>
+        <form action="/inv/add-classification" method="POST" id="classificationForm">
+            <fieldset> 
+                <p class="form-instructions">Classification names cannot contain spaces or special characters.</p>
+                
+                <label for="classification_name">Classification Name:</label>
+                <input type="text" name="classification_name" id="classification_name" required 
+                       pattern="^[a-zA-Z0-9]+$" 
+                       title="Classification name can only contain letters and numbers (no spaces or special characters)"
+                       value="<%= locals.classification_name || '' %>">
+                
+                <button type="submit">Add Classification</button>
+            </fieldset>
+        </form>
+    </main>
 </body>
 </html>

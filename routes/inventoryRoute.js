@@ -1,28 +1,30 @@
 // Needed Resources 
-const express = require("express")
-const router = new express.Router() 
-const invController = require("../controllers/invController")
+const express = require("express");
+const router = new express.Router();
+const invController = require("../controllers/invController");
+const validate = require("../middleware/validate"); // If using validation middleware
 
-// Ruta para la vista de gestión de inventario
-router.get("/inv", invController.showManagementView);
+// Route for inventory management view
+router.get("/", invController.showManagementView);
 
-router.post("/add-classification", invController.addClassification); // Route to handle adding a new classification
-router.get("/add-classification", invController.showAddClassificationView); // Route to show add classification view
+// Routes for classification management
+router.get("/add-classification", invController.showAddClassificationView);
+router.post(
+    "/add-classification", 
+    validate.classificationRules(), // Only if using express-validator
+    validate.checkClassificationData, // Only if using express-validator
+    invController.addClassification
+);
 
-router.post("/add-inventory", invController.addInventory); // Route to handle adding a new inventory item
-router.get("/add-inventory", invController.showAddInventoryView); // Route to show add inventory view
-
-// Route to get inventory by classification
-router.get("/", invController.renderManagementView);
-router.get("/add-classification", invController.renderAddClassificationView);
-router.get("/add-inventory", invController.renderAddInventoryView);
-router.post("/add-classification", invController.addClassification);
+// Routes for inventory management
+router.get("/add-inventory", invController.showAddInventoryView);
 router.post("/add-inventory", invController.addInventory);
-router.get("/api/classifications", invController.getClassifications);
+
+// Routes for viewing inventory
 router.get("/type/:classificationId", invController.buildByClassificationId);
-
-
-// Route to get vehicle detail view
 router.get("/detail/:id", invController.getVehicleDetail);
+
+// API route for classifications (for AJAX requests if needed)
+router.get("/api/classifications", invController.getClassifications);
 
 module.exports = router;

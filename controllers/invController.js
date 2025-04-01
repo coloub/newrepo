@@ -147,12 +147,72 @@ invCont.showAddClassificationView = baseController.handleErrors(async function (
     const nav = await utilities.getNav();
     const successMessages = req.flash('success');
     const errorMessages = req.flash('error');
-    const flashMessage = [...successMessages, ...errorMessages].join(' '); // Concatenate messages
+    const flashMessage = [...successMessages, ...errorMessages].join(' ');
+    
     res.render("./inventory/add-classification", {
-        title: "Agregar Clasificación",
+        title: "Add Classification",
         nav,
         flashMessage,
+        errors: null,
     });
+});
+
+/* ***************************
+ *  Process Add Classification
+ * ************************** */
+invCont.addClassification = baseController.handleErrors(async function (req, res, next) {
+    const { classification_name } = req.body;
+    
+    // Server-side validation
+    if (!classification_name || !/^[a-zA-Z0-9]+$/.test(classification_name)) {
+        req.flash('error', 'Classification name can only contain letters and numbers (no spaces or special characters)');
+        // Return to form with entered value (sticky form)
+        return res.status(400).render("./inventory/add-classification", {
+            title: "Add Classification",
+            nav: await utilities.getNav(),
+            flashMessage: 'Classification name can only contain letters and numbers (no spaces or special characters)',
+            classification_name // Make the form sticky
+        });
+    }
+    
+    try {
+        // Check if classification already exists
+        const classifications = await invModel.getClassifications();
+        const exists = classifications.rows.some(
+            classification => classification.classification_name.toLowerCase() === classification_name.toLowerCase()
+        );
+        
+        if (exists) {
+            req.flash('error', `"${classification_name}" classification already exists`);
+            return res.status(409).render("./inventory/add-classification", {
+                title: "Add Classification",
+                nav: await utilities.getNav(),
+                flashMessage: `"${classification_name}" classification already exists`,
+                classification_name // Make the form sticky
+            });
+        }
+        
+        // Add classification to database
+        await invModel.addClassification(classification_name);
+        
+        // Build new navigation with the new classification
+        const newNav = await utilities.getNav();
+        
+        // Set success message and redirect to inventory management
+        req.flash('success', `"${classification_name}" classification added successfully`);
+        return res.redirect('/inv');
+    } catch (error) {
+        console.error("Error in addClassification:", error);
+        req.flash('error', 'Sorry, there was an error processing the request');
+        
+        // Return to form with entered value (sticky form)
+        return res.status(500).render("./inventory/add-classification", {
+            title: "Add Classification",
+            nav: await utilities.getNav(),
+            flashMessage: 'An error occurred. Please try again.',
+            classification_name // Make the form sticky
+        });
+    }
 });
 
 /* ***************************
