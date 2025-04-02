@@ -69,4 +69,38 @@ validate.checkRegData = async (req, res, next) => {
   next();
 };
 
+/* **********************************
+ * Login Data Validation Rules
+ * ********************************* */
+validate.loginRules = () => {
+  return [
+    // email is required and must be valid
+    body("account_email")
+      .trim()
+      .escape()
+      .notEmpty()
+      .isEmail()
+      .normalizeEmail()
+      .withMessage("A valid email is required."),
+
+    // password is required
+    body("account_password")
+      .trim()
+      .notEmpty()
+      .withMessage("Password is required."),
+  ];
+};
+
+/* **********************************
+ * Check Login Data and return errors or continue to login
+ * ********************************* */
+validate.checkLoginData = async (req, res, next) => {
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    req.flash("notice", "Invalid login credentials. Please try again.");
+    return res.redirect('/'); // Redirect back to login page
+  }
+  next();
+};
+
 module.exports = validate;

@@ -15,10 +15,9 @@ const inventoryRoute = require("./routes/inventoryRoute")
 const utilities = require("./utilities/index") // Importante utilities
 const session = require("express-session")
 const pool = require('./database/')
-const bodyParser = require("body-parser");
-const accountRoute = require('./routes/accountRoute'); // Adjust the path if necessary
-
-;
+const bodyParser = require("body-parser")
+const cookieParser = require("cookie-parser")
+const accountRoute = require('./routes/accountRoute') // Adjust the path if necessary
 
 /* ***********************
  * Middleware
@@ -36,6 +35,9 @@ app.use(session({
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
+app.use(cookieParser())
+
 // Express Messages Middleware
 
 app.use(require('connect-flash')())
