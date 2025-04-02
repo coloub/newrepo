@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Management</title>
-    <link rel="stylesheet" href="/css/styles.css"> <!-- Link to your CSS file -->
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <header>
-        <h1>Account Management</h1>
-    </header>
-    <main>
-        <% if (flash.success) { %>
-            <div class="flash-message success"><%= flash.success %></div>
+    <div class="container">
+        <h1><%= title %></h1>
+        <% if (messages.error) { %>
+            <div class="alert alert-danger"><%= messages.error %></div>
         <% } %>
-        <% if (flash.notice) { %>
-            <div class="flash-message notice"><%= flash.notice %></div>
+        <% if (messages.success) { %>
+            <div class="alert alert-success"><%= messages.success %></div>
         <% } %>
-        <p>You're logged in.</p>
-    </main>
+        
+        <p>You're logged in!</p>
+        
+        <% if (locals.accountData) { %>
+            <p>Welcome, <%= locals.accountData.account_firstname %> <%= locals.accountData.account_lastname %>!</p>
+        <% } %>
+    </div>
 </body>
 </html>

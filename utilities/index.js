@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
 const invModel = require("../models/inventory-model")
 const Util = {}
 
@@ -92,6 +94,19 @@ Util.buildClassificationList = async function (classification_id = null) {
   return classificationList;
 };
 
+/* **************************************
+* Middleware to check token validity
+* ************************************* */
+Util.checkLogin = (req, res, next) => {
+  if (req.cookies.jwt) {
+    // Hay un token, proceder
+    next()
+  } else {
+    // No hay token, redirigir al login
+    req.flash("notice", "Please log in")
+    return res.redirect("/account/login")
+  }
+}
 
  /* ****************************************
  * Middleware For Handling Errors

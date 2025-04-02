@@ -5,7 +5,7 @@ const accountController = require('../controllers/accountController');
 const regValidate = require('../utilities/account-validation');
 
 // Define the GET route for the account view
-router.get('/', accountController.buildLogin);
+router.get('/', utilities.checkLogin, accountController.buildAccountManagement);
 
 router.get('/accounts', accountController.buildAccountManagement); // Add new accounts route
 

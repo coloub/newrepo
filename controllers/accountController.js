@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
-const utilities = require('../utilities/index'); // Import utilities
-console.log("buildLogin function called"); // Log to check if the function is executed
+const utilities = require('../utilities/index')
 
 const accountController = {};
 const accountModel = require('../models/account-model'); // Import account model
@@ -95,10 +94,11 @@ async function accountLogin(req, res) {
       } else {
         res.cookie("jwt", accessToken, { httpOnly: true, secure: true, maxAge: 3600 * 1000 })
       }
-      return res.redirect("/account/")
+      req.flash("success", "You're now logged in") // Añade un mensaje de éxito
+      return res.redirect("/accountManagement") // Redirect to account management view
     }
     else {
-      req.flash("message notice", "Please check your credentials and try again.")
+      req.flash("notice", "Please check your credentials and try again.")
       res.status(400).render("account/login", {
         title: "Login",
         nav,

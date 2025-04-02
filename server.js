@@ -12,11 +12,11 @@ const app = express()
 const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
-const utilities = require("./utilities/index") // Importante utilities
 const session = require("express-session")
 const pool = require('./database/')
 const bodyParser = require("body-parser")
 const cookieParser = require("cookie-parser")
+const utilities = require("./utilities/index") // Import utilities
 const accountRoute = require('./routes/accountRoute') // Adjust the path if necessary
 
 /* ***********************

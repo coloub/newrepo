@@ -98,7 +98,13 @@ validate.checkLoginData = async (req, res, next) => {
   let errors = validationResult(req);
   if (!errors.isEmpty()) {
     req.flash("notice", "Invalid login credentials. Please try again.");
-    return res.redirect('/'); // Redirect back to login page
+    let nav = await utilities.getNav();
+    return res.render("account/login", {
+        title: "Login",
+        nav,
+        errors: errors.array(), // Pass the validation errors to the view
+        account_email: req.body.account_email, // Retain the email input
+    });
   }
   next();
 };
