@@ -108,6 +108,8 @@ Util.checkLogin = (req, res, next) => {
   }
 }
 
+
+
  /* ****************************************
  * Middleware For Handling Errors
  * Wrap other function in this for 

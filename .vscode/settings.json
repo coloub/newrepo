@@ -12,5 +12,6 @@
             "name": "render.com",
             "connectString": "postgresql://demojose01:Y55YfGIkOinMbbyLtmga7m6QWDBk93Cm@dpg-cvaperl6l47c73a6sv30-a.virginia-postgres.render.com/demojose01"
         }
-    ]
+    ],
+    "CodeGPT.apiKey": "CodeGPT Plus Beta"
 }

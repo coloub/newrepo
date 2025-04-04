@@ -3,6 +3,7 @@ const express = require("express");
 const router = new express.Router();
 const invController = require("../controllers/invController");
 const validate = require("../middleware/validate"); // If using validation middleware
+const { checkEmployeeAdmin } = require("../middleware/auth") // Importa el middleware
 
 // Route for inventory management view
 router.get("/", invController.showManagementView);
@@ -26,5 +27,22 @@ router.get("/detail/:id", invController.getVehicleDetail);
 
 // API route for classifications (for AJAX requests if needed)
 router.get("/api/classifications", invController.getClassifications);
+
+// Rutas protegidas (solo para empleados y admin)
+router.get("/add-classification", checkEmployeeAdmin, invController.showAddClassificationView);
+router.post(
+    "/add-classification", 
+    checkEmployeeAdmin,
+    validate.classificationRules(), 
+    validate.checkClassificationData, 
+    invController.addClassification
+);
+
+router.get("/add-inventory", checkEmployeeAdmin, invController.showAddInventoryView);
+router.post("/add-inventory", checkEmployeeAdmin, invController.addInventory);
+
+// Las rutas de visualización no necesitan protección
+router.get("/type/:classificationId", invController.buildByClassificationId);
+router.get("/detail/:id", invController.getVehicleDetail);
 
 module.exports = router;

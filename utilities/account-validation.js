@@ -1,5 +1,6 @@
 const utilities = require(".");
 const { body, validationResult } = require("express-validator");
+const accountModel = require("../models/account-model");
 const validate = {};
 
 /*  **********************************
@@ -108,5 +109,56 @@ validate.checkLoginData = async (req, res, next) => {
   }
   next();
 };
+
+/* ******************************
+ * Update Account Validation Rules
+ * ***************************** */
+validate.updateAccountRules = () => {
+  return [
+    // firstname is required and must be string
+    body("account_firstname")
+      .trim()
+      .isLength({ min: 1 })
+      .withMessage("Please provide a first name."),
+
+    // lastname is required and must be string
+    body("account_lastname")
+      .trim()
+      .isLength({ min: 1 })
+      .withMessage("Please provide a last name."),
+
+    // email is required and must be valid format
+    body("account_email")
+      .trim()
+      .isEmail()
+      .normalizeEmail() // refer to validator.js docs
+      .withMessage("A valid email is required.")
+      .custom(async (account_email, { req }) => {
+        const account_id = req.body.account_id
+        const account = await accountModel.getAccountByEmail(account_email)
+        // if email exists and isn't owned by current user
+        if (account && account.account_id != account_id) {
+          throw new Error("Email already exists. Please use a different email")
+        }
+        return true
+      }),
+  ]
+}
+
+/* ******************************
+ * Password Update Validation Rules
+ * ***************************** */
+validate.updatePasswordRules = () => {
+  return [
+    // password is required and must be strong password
+    body("account_password")
+      .trim()
+      .isLength({ min: 12 })
+      .withMessage("Password must be at least 12 characters")
+      .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$/)
+      .withMessage("Password must contain at least 1 number, 1 capital letter, and 1 special character"),
+  ]
+}
+
 
 module.exports = validate;

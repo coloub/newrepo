@@ -27,5 +27,15 @@ router.post(
   utilities.handleErrors(accountController.accountLogin)
 );
 
+router.get('/update/:account_id', utilities.checkLogin, utilities.handleErrors(accountController.buildAccountUpdate));
+router.post('/update/:account_id', utilities.handleErrors(accountController.updateAccount));
+
+router.get('/update-password/:account_id', utilities.checkLogin, utilities.handleErrors(accountController.buildPasswordUpdate));
+router.post('/update-password/:account_id', utilities.handleErrors(accountController.updatePassword));
+
+
+// Logout route
+router.get('/logout', utilities.handleErrors(accountController.accountLogout));
+
 // Export the router
 module.exports = router;
