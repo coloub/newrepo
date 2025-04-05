@@ -5,17 +5,22 @@ const pool = require('../database/index');
 * *************************** */
 async function registerAccount(account_firstname, account_lastname, account_email, account_password){
   try {
-    const sql = "INSERT INTO account (account_firstname, account_lastname, account_email, account_password, account_type) VALUES ($1, $2, $3, $4, 'Client') RETURNING *"
-    return await pool.query(sql, [account_firstname, account_lastname, account_email, account_password])
+    console.log(`Intentando registrar cuenta para: ${account_email}`);
+    const sql = "INSERT INTO account (account_firstname, account_lastname, account_email, account_password, account_type) VALUES ($1, $2, $3, $4, 'Client') RETURNING *";
+    const result = await pool.query(sql, [account_firstname, account_lastname, account_email, account_password]);
+    console.log(`Cuenta registrada con éxito. ID: ${result.rows[0].account_id}`);
+    return result;
   } catch (error) {
-    if (error.code === 'ECONNREFUSED') {
+    console.error(`Error al registrar cuenta: ${error.message}, Código: ${error.code}`);
+    if (error.code === '23505') {
+        return 'Email already exists. Please use a different email.';
+    } else if (error.code === 'ECONNREFUSED') {
         return 'Database connection was refused. Please check your database server.';
-    } else if (error.code === 'ER_BAD_FIELD_ERROR') {
-        return 'There was an error with the fields provided. Please check your input.';
+    } else if (error.code === '42P01') {
+        return 'Table "account" does not exist. Please check your database setup.';
     } else {
-        return 'An unexpected error occurred. Please try again later.';
+        return `An unexpected error occurred: ${error.message}`;
     }
-
   }
 }
 
@@ -24,12 +29,16 @@ async function registerAccount(account_firstname, account_lastname, account_emai
 * ***************************** */
 async function getAccountByEmail (account_email) {
   try {
+    console.log(`Buscando cuenta con email: ${account_email}`);
     const result = await pool.query(
       'SELECT account_id, account_firstname, account_lastname, account_email, account_type, account_password FROM account WHERE account_email = $1',
-      [account_email])
-    return result.rows[0]
+      [account_email]);
+    
+    console.log(`Resultado de la búsqueda: ${result.rowCount} filas encontradas`);
+    return result.rows[0];
   } catch (error) {
-    return new Error("No matching email found")
+    console.error(`Error al buscar cuenta por email: ${error.message}`);
+    return null;
   }
 }
 

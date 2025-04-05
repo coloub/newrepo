@@ -99,15 +99,56 @@ Util.buildClassificationList = async function (classification_id = null) {
 * ************************************* */
 Util.checkLogin = (req, res, next) => {
   if (req.cookies.jwt) {
-    // Hay un token, proceder
-    next()
+    try {
+      // Verify the token
+      const decoded = jwt.verify(req.cookies.jwt, process.env.ACCESS_TOKEN_SECRET)
+      // Add user data to request
+      req.user = decoded
+      next()
+    } catch (err) {
+      // Token is invalid
+      res.clearCookie("jwt")
+      req.flash("notice", "Your session has expired. Please log in again.")
+      return res.redirect("/account/login")
+    }
   } else {
-    // No hay token, redirigir al login
+    // No token present
     req.flash("notice", "Please log in")
     return res.redirect("/account/login")
   }
 }
 
+/* **************************************
+* Middleware to check user role
+* ************************************* */
+Util.checkAdminEmployee = (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      // Verify the token
+      const decoded = jwt.verify(req.cookies.jwt, process.env.ACCESS_TOKEN_SECRET)
+      
+      // Check if user is Admin or Employee
+      if (decoded.account_type === "Admin" || decoded.account_type === "Employee") {
+        // Add user data to request and continue
+        req.user = decoded
+        next()
+      } else {
+        // User doesn't have required permissions
+        req.flash("notice", "You don't have permission to access this resource")
+        return res.redirect("/account/login")
+      }
+    } catch (err) {
+      // Token is invalid
+      res.clearCookie("jwt")
+      req.flash("notice", "Your session has expired. Please log in again.")
+      return res.redirect("/account/login")
+    }
+  } else {
+    // No token present
+    req.flash("notice", "Please log in")
+    return res.redirect("/account/login")
+  }
+}
 
 
  /* ****************************************

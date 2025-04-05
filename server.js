@@ -33,6 +33,21 @@ app.use(session({
   name: 'sessionId',
 }))
 
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true,
+}));
+
+// Revisar dos veces si la possicion esta bien puesta
+app.use((req, res, next) => {
+  res.locals.loggedin = req.session.loggedin
+  res.locals.accountData = req.session.accountData
+  next()
+})
+
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
@@ -58,6 +73,7 @@ app.use(static)
 app.use("/inv", inventoryRoute)
 
 app.use('/account', accountRoute); // Add account route
+
 
 //Index route
 /*app.get("/", function(req, res){

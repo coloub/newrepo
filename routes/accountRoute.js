@@ -3,11 +3,12 @@ const router = express.Router();
 const utilities = require('../utilities/index');
 const accountController = require('../controllers/accountController');
 const regValidate = require('../utilities/account-validation');
+const accountModel = require('../models/account-model');
+const bcrypt = require('bcryptjs');
+
 
 // Define the GET route for the account view
 router.get('/', utilities.checkLogin, accountController.buildAccountManagement);
-
-router.get('/accounts', accountController.buildAccountManagement); // Add new accounts route
 
 router.use((err, req, res, next) => {
     console.error(err); // Log the error
@@ -32,6 +33,57 @@ router.post('/update/:account_id', utilities.handleErrors(accountController.upda
 
 router.get('/update-password/:account_id', utilities.checkLogin, utilities.handleErrors(accountController.buildPasswordUpdate));
 router.post('/update-password/:account_id', utilities.handleErrors(accountController.updatePassword));
+
+
+// Temporary test route - REMOVE AFTER TESTING
+router.get('/test-password/:password', async (req, res) => {
+  try {
+    const password = req.params.password;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const match = await bcrypt.compare(password, hashedPassword);
+    
+    res.json({
+      originalPassword: password,
+      hashedPassword: hashedPassword,
+      passwordMatch: match,
+      hashLength: hashedPassword.length
+    });
+  } catch (error) {
+    res.json({error: error.message});
+  }
+});
+
+// Temporary route to fix password - REMOVE AFTER USE
+router.get('/fix-password/:email', async (req, res) => {
+  try {
+    const email = req.params.email;
+    
+    // Get the account
+    const account = await accountModel.getAccountByEmail(email);
+    
+    if (!account) {
+      return res.send('Account not found');
+    }
+    
+    // Get the current plain text password
+    const plainPassword = account.account_password;
+    
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(plainPassword, 10);
+    
+    console.log("Original password:", plainPassword);
+    console.log("Hashed password:", hashedPassword);
+    
+    // Update the password
+    await accountModel.updatePassword(hashedPassword, account.account_id);
+    
+    res.send('Password hashed successfully. You can now log in with your same password.');
+  } catch (error) {
+    console.error(error);
+    res.send('Error fixing password: ' + error.message);
+  }
+});
+
 
 
 // Logout route
