@@ -160,61 +160,89 @@ accountController.buildAccountUpdate = async (req, res, next) => {
 *  Process Account Update
 * *************************************** */
 accountController.updateAccount = async (req, res, next) => {
-  let nav = await utilities.getNav()
-  const { account_firstname, account_lastname, account_email, account_id } = req.body
+  let nav = await utilities.getNav();
+  const { account_firstname, account_lastname, account_email, account_id } = req.body;
   
-  const updateResult = await accountModel.updateAccount(
-    account_firstname,
-    account_lastname,
-    account_email,
-    account_id
-  )
-  
-  if (updateResult instanceof Error) {
-    req.flash("notice", "Update failed. Please try again.")
-    res.status(400).render("account/update", {
+  try {
+    const updateResult = await accountModel.updateAccount(
+      account_firstname,
+      account_lastname,
+      account_email,
+      account_id
+    );
+    
+    // Get updated account data
+    const accountData = await accountModel.getAccountById(account_id);
+    
+    // Update session
+    req.session.accountData = accountData;
+    
+    req.flash("success", "Account information updated successfully");
+    return res.redirect("/account/");
+  } catch (error) {
+    console.error("Account update error:", error);
+    
+    // Prepare error-specific messages
+    let message = "Update failed. Please try again.";
+    if (error.message.includes("Email already exists")) {
+      message = "That email is already in use. Please use a different email.";
+    }
+    
+    req.flash("notice", message);
+    return res.status(400).render("account/update", {
       title: "Update Account",
       nav,
       errors: null,
-      accountData: await accountModel.getAccountById(account_id),
-    })
-    return
+      accountData: { 
+        account_id,
+        account_firstname,
+        account_lastname,
+        account_email
+      },
+    });
   }
-  
-  // Get the updated account data
-  const accountData = await accountModel.getAccountById(account_id)
-  // Update the session with new data
-  req.session.accountData = accountData
-  
-  req.flash("success", "Account updated successfully.")
-  res.redirect("/account/")
 };
 
 /* ****************************************
 *  Process Password Update
 * *************************************** */
 accountController.updatePassword = async (req, res, next) => {
-  let nav = await utilities.getNav()
-  const { account_password, account_id } = req.body
+  let nav = await utilities.getNav();
+  const { account_password, account_id } = req.body;
   
-  // Hash the password before storing
-  let hashedPassword = await bcrypt.hash(account_password, 10);
-  
-  const updateResult = await accountModel.updatePassword(hashedPassword, account_id)
-  
-  if (updateResult instanceof Error) {
-    req.flash("notice", "Password update failed. Please try again.")
-    res.status(400).render("account/update", {
+  try {
+    // Validate password meets requirements
+    if (account_password.length < 8) {
+      throw new Error("Password must be at least 8 characters");
+    }
+    
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(account_password, 10);
+    
+    const updateResult = await accountModel.updatePassword(hashedPassword, account_id);
+    
+    req.flash("success", "Password updated successfully");
+    return res.redirect("/account/");
+  } catch (error) {
+    console.error("Password update error:", error);
+    
+    // Get account data for the form
+    const accountData = await accountModel.getAccountById(account_id);
+    
+    // Prepare error message
+    let message = "Password update failed. Please try again.";
+    if (error.message.includes("at least 8 characters")) {
+      message = "Password must be at least 8 characters long.";
+    }
+    
+    req.flash("notice", message);
+    return res.status(400).render("account/update", {
       title: "Update Account",
       nav,
       errors: null,
-      accountData: await accountModel.getAccountById(account_id),
-    })
-    return
+      accountData,
+    });
   }
-  
-  req.flash("success", "Password updated successfully.")
-  res.redirect("/account/")
 };
 
 /* ****************************************

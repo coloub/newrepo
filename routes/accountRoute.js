@@ -5,6 +5,7 @@ const accountController = require('../controllers/accountController');
 const regValidate = require('../utilities/account-validation');
 const accountModel = require('../models/account-model');
 const bcrypt = require('bcryptjs');
+const validate = require('../middleware/validate');
 
 
 // Define the GET route for the account view
@@ -28,12 +29,24 @@ router.post(
   utilities.handleErrors(accountController.accountLogin)
 );
 
-router.get('/update/:account_id', utilities.checkLogin, utilities.handleErrors(accountController.buildAccountUpdate));
-router.post('/update/:account_id', utilities.handleErrors(accountController.updateAccount));
+router.get('/update/:account_id', 
+  utilities.checkLogin, 
+  utilities.handleErrors(accountController.buildAccountUpdate)
+);
 
-router.get('/update-password/:account_id', utilities.checkLogin, utilities.handleErrors(accountController.buildPasswordUpdate));
-router.post('/update-password/:account_id', utilities.handleErrors(accountController.updatePassword));
+router.post('/update/:account_id',
+  utilities.checkLogin, // Verify user is logged in
+  validate.accountUpdateRules(), // Validate input fields
+  validate.checkUpdateData, // Process validation results
+  utilities.handleErrors(accountController.updateAccount) // Handle controller errors
+);
 
+router.post('/update-password/:account_id',
+  utilities.checkLogin, // Verify user is logged in
+  validate.passwordUpdateRules(), // Validate password requirements
+  validate.checkPasswordUpdate, // Process validation results
+  utilities.handleErrors(accountController.updatePassword) // Handle controller errors
+);
 
 // Temporary test route - REMOVE AFTER TESTING
 router.get('/test-password/:password', async (req, res) => {

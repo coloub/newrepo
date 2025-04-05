@@ -61,11 +61,32 @@ async function getAccountById(account_id) {
 * ***************************** */
 async function updateAccount(account_firstname, account_lastname, account_email, account_id) {
   try {
-    const sql = "UPDATE account SET account_firstname = $1, account_lastname = $2, account_email = $3 WHERE account_id = $4 RETURNING *"
-    const result = await pool.query(sql, [account_firstname, account_lastname, account_email, account_id])
-    return result.rows[0]
+    // First check if email exists for another account
+    const emailCheck = await pool.query(
+      'SELECT account_id FROM account WHERE account_email = $1 AND account_id != $2',
+      [account_email, account_id]
+    );
+    
+    if (emailCheck.rowCount > 0) {
+      throw new Error('Email already exists');
+    }
+
+    const sql = "UPDATE account SET account_firstname = $1, account_lastname = $2, account_email = $3 WHERE account_id = $4 RETURNING *";
+    const result = await pool.query(sql, [
+      account_firstname, 
+      account_lastname, 
+      account_email, 
+      account_id
+    ]);
+    
+    if (result.rowCount === 0) {
+      throw new Error('No account found with that ID');
+    }
+    
+    return result.rows[0];
   } catch (error) {
-    return error
+    console.error('Account update error:', error);
+    throw error; // Re-throw for controller to handle
   }
 }
 
@@ -74,11 +95,22 @@ async function updateAccount(account_firstname, account_lastname, account_email,
 * ***************************** */
 async function updatePassword(account_password, account_id) {
   try {
-    const sql = "UPDATE account SET account_password = $1 WHERE account_id = $2 RETURNING *"
-    const result = await pool.query(sql, [account_password, account_id])
-    return result.rows[0]
+    // Verify password is hashed (basic check)
+    if (account_password.length < 60 || account_password.includes(' ')) {
+      throw new Error('Password must be hashed before storage');
+    }
+
+    const sql = "UPDATE account SET account_password = $1 WHERE account_id = $2 RETURNING *";
+    const result = await pool.query(sql, [account_password, account_id]);
+    
+    if (result.rowCount === 0) {
+      throw new Error('No account found with that ID');
+    }
+    
+    return result.rows[0];
   } catch (error) {
-    return error
+    console.error('Password update error:', error);
+    throw error;
   }
 }
 
