@@ -48,7 +48,18 @@ accountController.buildRegister = async (req, res, next) => {
 * *************************************** */
 accountController.registerAccount = async (req, res) => {
   let nav = await utilities.getNav();
-  const { account_firstname, account_lastname, account_email, account_password } = req.body;
+  const { account_firstname, account_lastname, account_email, account_password, account_type } = req.body;
+
+  // Validate account_type
+  const validAccountTypes = ["Client", "Employee", "Admin"];
+  if (!validAccountTypes.includes(account_type)) {
+    req.flash("notice", "Invalid account type selected. Please try again.");
+    return res.status(400).render("account/register", {
+      title: "Registration",
+      nav,
+      errors: [{ msg: "Invalid account type selected." }],
+    });
+  }
 
   // Hash the password before storing
   let hashedPassword = await bcrypt.hash(account_password, 10);
@@ -57,7 +68,8 @@ accountController.registerAccount = async (req, res) => {
       account_firstname,
       account_lastname,
       account_email,
-      hashedPassword  // Store the hashed password
+      hashedPassword,
+      account_type // Pass the selected account type to the model
   );
 
   if (typeof regResult === 'string') {
@@ -70,13 +82,12 @@ accountController.registerAccount = async (req, res) => {
       return;
   }
 
-  req.flash("success", `Congratulations, you\'re registered ${account_firstname}. Please log in.`);
+  req.flash("success", `Congratulations, you\'re registered as a ${account_type}, ${account_firstname}. Please log in.`);
   res.status(201).render("account/login", {
       title: "Login",
       nav,
   });
 };
-
 
 /* ****************************************
  *  Process login request

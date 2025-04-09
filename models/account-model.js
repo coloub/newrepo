@@ -3,15 +3,15 @@ const pool = require('../database/index');
 /* *****************************
 *   Register new account
 * *************************** */
-async function registerAccount(account_firstname, account_lastname, account_email, account_password){
+async function registerAccount(account_firstname, account_lastname, account_email, account_password, account_type){
   try {
-    console.log(`Intentando registrar cuenta para: ${account_email}`);
-    const sql = "INSERT INTO account (account_firstname, account_lastname, account_email, account_password, account_type) VALUES ($1, $2, $3, $4, 'Client') RETURNING *";
-    const result = await pool.query(sql, [account_firstname, account_lastname, account_email, account_password]);
-    console.log(`Cuenta registrada con éxito. ID: ${result.rows[0].account_id}`);
+    console.log(`Attempting to register account for: ${account_email}`);
+    const sql = "INSERT INTO account (account_firstname, account_lastname, account_email, account_password, account_type) VALUES ($1, $2, $3, $4, $5) RETURNING *";
+    const result = await pool.query(sql, [account_firstname, account_lastname, account_email, account_password, account_type]);
+    console.log(`Account successfully registered. ID: ${result.rows[0].account_id}`);
     return result;
   } catch (error) {
-    console.error(`Error al registrar cuenta: ${error.message}, Código: ${error.code}`);
+    console.error(`Error registering account: ${error.message}, Code: ${error.code}`);
     if (error.code === '23505') {
         return 'Email already exists. Please use a different email.';
     } else if (error.code === 'ECONNREFUSED') {
