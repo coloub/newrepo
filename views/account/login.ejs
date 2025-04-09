@@ -9,25 +9,45 @@
 <body>
     <div class="container">
         <h1><%= title %></h1>
-        <% if (messages.error) { %>
-            <div class="alert alert-danger"><%= messages.error %></div>
+        <% if (messages.notice) { %>
+            <div class="flash-message error">
+                <p><%= messages.notice %></p>
+            </div>
         <% } %>
         <% if (messages.success) { %>
-            <div class="alert alert-success"><%= messages.success %></div>
+            <div class="flash-message success">
+                <p><%= messages.success %></p>
+            </div>
         <% } %>
-        <form id="loginForm" action="/account/login" method="post">        
+        <form id="loginForm" action="/account/login" method="post" novalidate>
 
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" name="account_email" id="email" required>
+                <input type="email" 
+                       name="account_email" 
+                       id="email" 
+                       required
+                       value="<%= typeof account_email !== 'undefined' ? account_email : '' %>">
+                <% if (typeof loginError !== 'undefined' && loginError) { %>
+                    <span class="error-message">Invalid email or password. Please try again.</span>
+                <% } %>
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" name="account_password" id="password" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$">
-            </div>
-            <div>
-                <span>Passwords must be at least 12 characters and contain at least 1 number, 1 capital letter and 1 special character</span>
-
+                <input type="password" 
+                       name="account_password" 
+                       id="password" 
+                       required 
+                       pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$">
+                <div class="password-requirements">
+                    <p>Password must contain:</p>
+                    <ul>
+                        <li class="req-length">At least 12 characters</li>
+                        <li class="req-number">1 number</li>
+                        <li class="req-upper">1 uppercase letter</li>
+                        <li class="req-special">1 special character</li>
+                    </ul>
+                </div>
             </div>
             <button type="submit">Login</button>
         </form>
