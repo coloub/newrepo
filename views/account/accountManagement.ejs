@@ -1,5 +1,4 @@
-<%- include('../partials/head') %>
-<%- include('../partials/header') %>
+
 
 <main>
   <% if (title) { %>
@@ -13,7 +12,7 @@
   <% } %>
 
   <% if (locals.accountData) { %>
-    <h2>Welcome <%= locals.accountData.account_type %> <%= locals.accountData.account_firstname %></h2>
+    <h2>Welcome <%= locals.accountData.account_firstname %></h2>
 
     <!-- Link to update account information (for all users) -->
     <p><a href="/account/update/<%= locals.accountData.account_id %>" class="btn btn-primary">Update Account Information</a></p>
@@ -25,5 +24,3 @@
     <% } %>
   <% } %>
 </main>
-
-<%- include('../partials/footer') %>
