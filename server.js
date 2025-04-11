@@ -73,7 +73,7 @@ app.use(static)
 app.use("/inv", inventoryRoute)
 
 app.use('/account', accountRoute); // Add account route
-
+app.use(require('./routes/commentRoute')); // Add comment route
 
 //Index route
 /*app.get("/", function(req, res){

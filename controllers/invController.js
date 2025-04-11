@@ -1,6 +1,7 @@
 const invModel = require("../models/inventory-model");
 const utilities = require("../utilities/");
 const baseController = require("./baseController");
+const Comment = require("../models/comment-model");
 
 const invCont = {};
 
@@ -95,12 +96,15 @@ invCont.addInventory = baseController.handleErrors(async function (req, res, nex
 invCont.getVehicleDetail = baseController.handleErrors(async function (req, res, next) {
   const vehicleId = req.params.id;
   const vehicleData = await invModel.getVehicleById(vehicleId);
+  const comments = await Comment.getVehicleComments(vehicleId);
+  
   if (vehicleData.length > 0) {
     const nav = await utilities.getNav();
     res.render("./inventory/detail", {
       title: vehicleData[0].inv_make + " " + vehicleData[0].inv_model,
       nav,
       vehicle: vehicleData[0],
+      comments
     });
   } else {
     res.status(404).render("errors/404", { title: "Vehicle Not Found" });
