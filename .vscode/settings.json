@@ -10,7 +10,7 @@
             "server": "localhost",
             "driver": "PostgreSQL",
             "name": "render.com",
-            "connectString": "postgresql://demojose01:Y55YfGIkOinMbbyLtmga7m6QWDBk93Cm@dpg-cvaperl6l47c73a6sv30-a.virginia-postgres.render.com/demojose01"
+            "connectString": "postgresql://newrepodb:VLxmCV3fOIPbYJoUIzTFV0XEyCH5mu7i@dpg-cvvuvluuk2gs73dn7bhg-a.virginia-postgres.render.com/newrepodb"
         }
     ],
     "CodeGPT.apiKey": "CodeGPT Plus Beta"
